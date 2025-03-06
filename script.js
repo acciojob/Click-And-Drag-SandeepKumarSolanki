@@ -1,54 +1,53 @@
-// Your code here.
-// Select all the items (cubes)
+// Select all the items in the container
 const items = document.querySelectorAll('.item');
-const container = document.querySelector('.items'); // Container where the items are placed
+const container = document.querySelector('.items');
 
-let selectedCube = null;
+// Variables to track the item being dragged and mouse offsets
+let selectedItem = null;
 let offsetX = 0;
 let offsetY = 0;
 
-// Mouse down event - when the user clicks on a cube
+// Adding mouse down event to each item
 items.forEach(item => {
   item.addEventListener('mousedown', (e) => {
-    selectedCube = item;  // Mark the cube as selected
-    offsetX = e.clientX - selectedCube.getBoundingClientRect().left;
-    offsetY = e.clientY - selectedCube.getBoundingClientRect().top;
+    selectedItem = item; // Set the selected item
+    offsetX = e.clientX - selectedItem.getBoundingClientRect().left; // Calculate offset
+    offsetY = e.clientY - selectedItem.getBoundingClientRect().top; // Calculate offset
 
-    // Add mousemove and mouseup event listeners
+    // Add event listeners to move the item and drop it
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
 });
 
-// Mouse move event - when the mouse is moved while holding the cube
+// Mouse move event: Move the selected item based on mouse position
 function onMouseMove(e) {
-  if (selectedCube) {
-    // Calculate the new position
+  if (selectedItem) {
+    // Calculate new position of the item
     let newX = e.clientX - offsetX;
     let newY = e.clientY - offsetY;
 
-    // Get the container boundaries
+    // Get the bounding box of the container
     const containerRect = container.getBoundingClientRect();
 
-    // Ensure the cube stays within the container's boundaries
+    // Boundary checks to ensure the item stays inside the container
     if (newX < containerRect.left) newX = containerRect.left;
     if (newY < containerRect.top) newY = containerRect.top;
-    if (newX + selectedCube.offsetWidth > containerRect.right) newX = containerRect.right - selectedCube.offsetWidth;
-    if (newY + selectedCube.offsetHeight > containerRect.bottom) newY = containerRect.bottom - selectedCube.offsetHeight;
+    if (newX + selectedItem.offsetWidth > containerRect.right) newX = containerRect.right - selectedItem.offsetWidth;
+    if (newY + selectedItem.offsetHeight > containerRect.bottom) newY = containerRect.bottom - selectedItem.offsetHeight;
 
-    // Update the cube's position
-    selectedCube.style.position = 'absolute';
-    selectedCube.style.left = `${newX - containerRect.left}px`;
-    selectedCube.style.top = `${newY - containerRect.top}px`;
+    // Update the position of the selected item
+    selectedItem.style.left = `${newX - containerRect.left}px`;
+    selectedItem.style.top = `${newY - containerRect.top}px`;
   }
 }
 
-// Mouse up event - when the user releases the mouse
+// Mouse up event: Finalize the position of the item after dragging
 function onMouseUp() {
-  // Remove mousemove and mouseup event listeners
+  // Remove the event listeners
   document.removeEventListener('mousemove', onMouseMove);
   document.removeEventListener('mouseup', onMouseUp);
 
-  // Reset selected cube
-  selectedCube = null;
+  // Reset selected item
+  selectedItem = null;
 }
